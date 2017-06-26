@@ -1,5 +1,4 @@
 import prototype
-#from Projet_2I013 import strategy
 import tools
 import pickle
 import numpy as np
