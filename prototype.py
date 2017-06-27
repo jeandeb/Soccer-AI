@@ -15,11 +15,11 @@ logger = logging.getLogger("simuExpe")
 
 class Experience(object):
 
-    MAX_STEP = 40
+    MAX_STEP = 10
 
     def __init__( self, nb_gener, strat ):
     	
-     	self.data = np.zeros(( nb_gener, 4 ))
+     	self.data = data.data( nb_gener, NB_ESSAI, 3 )
      	self.strat = strat
      	self.simu = tools.init_game( self.strat )
      	self.simu.listeners += self
@@ -36,30 +36,37 @@ class Experience(object):
     def begin_match( self,team1,team2, state ):
      
         self.last = 0
-        self.step_action = NB_ESSAI
+        self.step_action = -1
         self.cpt = 0
+        self.pos = tools.generator( len( self.strat ), self.simu )
+        self.strat[0].passe = tools.shoot_vect_rand( self.pos )
 
     def begin_round( self,team1,team2, state ):
 
-		if( self.step_action >= NB_ESSAI ): 
-			self.pos = tools.generator( len( self.strat ), self.simu )
-			self.cpt += 1.
-		
-		elif( self.step_action >= 0 ): 
-			tools.positionne( self.pos, self.simu )
-	
-		elif( self.step_action < 0 ): 
-			self.step_action = NB_ESSAI + 1
-			
+    	self.step_action += 1
+    	self.last = self.simu.step
 
-		self.step_action += -1
-		self.last = self.simu.step
-		print self.step_action
+    	if( self.step_action%(NB_ESSAI*2) == 0 ):
+    		self.strat[0].passe = tools.shoot_vect_rand( self.pos )
+
+    		if( self.step_action%(NB_ESSAI*NB_ESSAI*2) == 0 ) :
+    			self.pos = tools.generator( len( self.strat ), self.simu )
+    			self.cpt+= 1
+    			print self.cpt
+
+    	else :
+    		tools.positionne( self.pos, self.simu ) 
+
 
     def update_round( self, team1, team2, state ):
 
-        if ( state.step > self.last + self.MAX_STEP ):
-            self.simu.end_round()
+		direction = tools.dir( self.pos )
+		norm = direction.norm
+		angle = direction.angle    	
+		boole = tools.valide( state, self.pos )
+		self.data.calcul_proba( boole, norm, angle, self.step_action )
+		if ( state.step > self.last + self.MAX_STEP ):
+			self.simu.end_round()
 
     def end_round( self,team1,team2, state ):
         

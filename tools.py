@@ -2,10 +2,12 @@ import data
 import random
 from soccersimulator import settings
 from soccersimulator import SoccerTeam, Simulation, Strategy, show_simu, Vector2D, SoccerAction
+import math
 
 NB_GENER = 100
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain
+GAME_GOAL_HEIGHT = 10
 
       
     
@@ -14,6 +16,13 @@ class StaticStrategy(Strategy):
         super(StaticStrategy,self).__init__("Static")
     def compute_strategy(self,state,id_team,id_player):
         return SoccerAction()
+
+class PasseLearningStrat( Strategy ) : 
+    def __init__(self,shoot=None):
+        self.name = "simple action"
+        self.passe = Vector2D()
+    def compute_strategy(self,state,id_team,id_player):
+        return SoccerAction(Vector2D(),self.passe)
 
 
 def init_game( strat ) : 
@@ -27,7 +36,7 @@ def init_game( strat ) :
 	team2 = SoccerTeam( "Static" )
 	team2.add( "Static", Strategy() )
 
-	simu = Simulation( team1, team2, max_steps=1000000 )
+	simu = Simulation( team1, team2, max_steps=100000000 )
 
 	return simu
 
@@ -68,15 +77,39 @@ def positionne( liste, simu ):
 		simu.state.states[(1,1)].vitesse = liste[2]
 
 
+def shoot_vect_rand( pos ):
 
-def passe_valid( state ) : 
-	pos_balle = simu.state.ball.position
-	pos_rec = simu.state.states[(1,1)].position
+	direc = dir( pos )
 
-	return (pos_balle - pos_rec).norm < 2
+	angle = direc.angle
+	norm = direc.norm
 
-def proba( nb_essai, cpt ) : 
-	
+	angle_rand = angle + (math.pi/4)*random.random() - math.pi/8.
+	norm_rand = 8*random.random()
+
+	return Vector2D( angle = angle_rand, norm = norm_rand )
+
+def dir( pos ) : 
+
+	direction = Vector2D( GAME_WIDTH, GAME_HEIGHT/2. ) - pos[0]
+
+	if len(pos) > 1 : 
+		direction = pos[1] - pos[0]
+
+	return direction
+
+
+def valide( state, pos ) : 
+
+	pos_balle = state.ball.position
+	position = Vector2D( GAME_WIDTH, GAME_HEIGHT/2. )
+
+	if len(pos) > 1 : 
+		position = state.states[(1,1)].position
+		return ((pos_balle - position).norm < 20) and (state.ball.vitesse.norm < 2)
+
+	return (pos_balle.x > GAME_WIDTH) and (pos_balle.y >GAME_HEIGHT/2- GAME_GOAL_HEIGHT/2) and (pos_balle.y < GAME_HEIGHT/2 + GAME_GOAL_HEIGHT/2)
+
 
 
 
