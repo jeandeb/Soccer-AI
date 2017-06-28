@@ -6,7 +6,7 @@ import tools
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain
-NB_ESSAI = 5
+NB_ESSAI = 3 
 
 import numpy as np
 import logging
@@ -15,7 +15,7 @@ logger = logging.getLogger("simuExpe")
 
 class Experience(object):
 
-    MAX_STEP = 10
+    MAX_STEP = 40
 
     def __init__( self, nb_gener, strat ):
     	
@@ -48,11 +48,12 @@ class Experience(object):
 
     	if( self.step_action%(NB_ESSAI*2) == 0 ):
     		self.strat[0].passe = tools.shoot_vect_rand( self.pos )
+    		self.data.set_essai( self.strat[0].passe, self.step_action )
 
     		if( self.step_action%(NB_ESSAI*NB_ESSAI*2) == 0 ) :
     			self.pos = tools.generator( len( self.strat ), self.simu )
     			self.cpt+= 1
-    			print self.cpt
+    			#print self.cpt
 
     	else :
     		tools.positionne( self.pos, self.simu ) 
@@ -65,7 +66,8 @@ class Experience(object):
 		angle = direction.angle    	
 		boole = tools.valide( state, self.pos )
 		self.data.calcul_proba( boole, norm, angle, self.step_action )
-		if ( state.step > self.last + self.MAX_STEP ):
+
+		if ( state.step > self.last + self.MAX_STEP ) or boole:
 			self.simu.end_round()
 
     def end_round( self,team1,team2, state ):

@@ -76,6 +76,45 @@ def positionne( liste, simu ):
 		simu.state.states[(1,1)].position = liste[1]
 		simu.state.states[(1,1)].vitesse = liste[2]
 
+def shoot_rand( dicho ) : 
+
+	print dicho
+	angle1 = dicho[0][0]
+	norm1 = dicho[0][1]
+	angle2 = dicho[1][0]
+	norm2 = dicho[1][1]
+
+	norm = 0
+	angle = 0
+
+	if( norm1 >= norm2 ) : 
+		norm = norm2 + ( norm2 - norm1 ) * random.random()
+	else : 
+		norm = norm1 + ( norm1 - norm2 ) * random.random()
+
+	if( angle1 >= angle2 ) : 
+		angle = angle2 + ( angle1 - angle2 ) * random.random()
+	else : 
+		angle = angle1 + ( angle2 - angle1 ) * random.random()
+
+	return Vector2D( angle = angle, norm = norm )
+
+def best_two( tab, dicho ):
+
+	#print tab
+	#print dicho
+	for i in tab : 
+		if (i[2] >= dicho[0][2] and i[1] > dicho[0][2]):
+			dicho[0][0] = i[0]
+			dicho[0][1] = i[1]
+			dicho[0][2] = i[2]
+		elif (i[2] >= dicho[1][2] and i[1] > dicho[1][2]) : 
+			dicho[1][0] = i[0]
+			dicho[1][1] = i[1]
+			dicho[1][2] = i[2]
+
+
+
 
 def shoot_vect_rand( pos ):
 
@@ -112,9 +151,9 @@ def valide( state, pos ) :
 
 
 
-
-
-
+def valide_tir( state ) : 
+	pos_balle = state.ball.position
+	return (pos_balle.x > GAME_WIDTH) and (pos_balle.y >GAME_HEIGHT/2- GAME_GOAL_HEIGHT/2) and (pos_balle.y < GAME_HEIGHT/2 + GAME_GOAL_HEIGHT/2)
 
 
 

@@ -3,7 +3,7 @@ import tools
 import pickle
 import sys
 import numpy as np
-NB_GENER = 10
+NB_GENER = 20
 
 strat1 = tools.PasseLearningStrat()
 
