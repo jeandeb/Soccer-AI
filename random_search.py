@@ -2,13 +2,13 @@ import tools
 import data
 from soccersimulator import settings
 from soccersimulator import SoccerTeam, Simulation, Strategy, show_simu, Vector2D, SoccerAction
-import tools
 import math
+import random
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain
-NB_ESSAI = 20
-NB_DICHO = 80
+NB_ESSAI = 15
+nb_rand = 2000
 
 import numpy as np
 import logging
@@ -32,12 +32,11 @@ class Experience(object):
             self.simu = tools.init_game( self.strat )
             self.goal = False
 
-        self.data = data.data_dicho( NB_ESSAI, NB_DICHO )
-        self.nb_dicho = NB_DICHO
+        self.data = data.data_rand( nb_rand, NB_ESSAI )
+        self.nb_rand = nb_rand
         self.strat = strat
         self.simu.listeners += self
-        self.dicho = [[3*math.pi/2,0.0,0.0],[math.pi/2,8.0,0.0]]
-
+        self.dicho = [0.,0.,0.,float('inf')]
 
     def start( self, visu = True ):
 
@@ -55,7 +54,9 @@ class Experience(object):
         self.simu.state.states[(1,0)].position = position.copy()
         self.simu.state.states[(1,0)].vitesse = Vector2D() 
         self.simu.state.ball.position = position.copy()
-        self.strat[0].passe = tools.shoot_rand( self.dicho )
+
+        self.strat[0].passe = tools.shoot_rand_search( self.dicho )
+        self.data.set_essai( self.strat[0].passe, 0 )
 
     def begin_round( self,team1,team2, state ):
 
@@ -71,26 +72,21 @@ class Experience(object):
         self.nb_tirs += 1
         self.last = self.simu.step
 
-        #print "cpt =" + str(self.cpt)
-        if( self.cpt >= self.nb_dicho ) : 
+        if( self.cpt >= self.nb_rand ) : 
             self.simu.end_match()
             return
 
-        #print self.nb_tirs
+        if( self.nb_tirs%(NB_ESSAI*2) == 0 and self.nb_tirs > 1 ):
 
-        if( self.nb_tirs%(NB_ESSAI*NB_ESSAI*2) == 0 and self.nb_tirs != 0 ) :
-                #print "dicho"
-                #print self.dicho
-                #print self.data.state
-                tools.best_two( self.data.state, self.dicho )
-                self.cpt += 1
-                
-
-        if( self.nb_tirs%(NB_ESSAI*2)-1 == 0 ):
-            #print "set essai"
-            self.strat[0].passe = tools.shoot_rand( self.dicho )
+            #print self.dicho
+            #print "essai = " + str(self.strat[0].passe.angle) + " " + str(self.strat[0].passe.norm)
+            tools.best( self.data.state, self.dicho )
+            #print self.dicho
+            self.strat[0].passe = tools.new_shoot( self.dicho )
             self.data.set_essai( self.strat[0].passe, self.nb_tirs )
+            self.cpt += 1
 
+                
 
     def update_round( self, team1, team2, state ):
 
@@ -100,20 +96,15 @@ class Experience(object):
 
     def end_round( self,team1,team2, state ):
 
-        
-        if( self.cpt >= self.nb_dicho ) : 
+
+        if( self.nb_tirs >= nb_rand*NB_ESSAI*2-1 ) : 
             self.simu.end_match()
 
         boole = tools.valide_tir( state )
+        score = tools.score( state )
+
+        self.data.set_score( score, self.nb_tirs )
+
         self.data.calcul_proba( boole, self.nb_tirs  )
-
-
-
-
-
-
-
-
-
 
 

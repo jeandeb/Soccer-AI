@@ -49,27 +49,83 @@ class data_dicho( object ) :
 		self.cpt = 0.0
 		self.success = 0.0
 
-	def calcul_proba( self, boole, step, nb_tirs ) : 
+	def calcul_proba( self, boole, nb_tirs ) : 
 
 		#print step, self.cpt, self.success
-		if step == 0 :
-			return
-
-		essai = step//nb_tirs
-
-		if ( step >= 2*self.nb_essai-1 ): 
-			print "success = " + str( self.success )
-			print " essai " +str(step%self.nb_essai)
-			self.state[essai][2] = self.success/step
-			self.success = 0.
-
-		elif boole : 
+		if boole : 
 			self.success += 1.
 
-	def set_essai( self, vecteur, step ):
-			essai = step//self.nb_essai
-			self.state[essai][1] = vecteur.norm
-			self.state[essai][0] = vecteur.angle
+		pos = nb_tirs//(self.nb_essai*2)
+		essai = nb_tirs%(self.nb_essai*2)
+		if ( essai >= 2*self.nb_essai-1 ): 
+			#print "success = " + str( self.success )
+			#print " essai " + str(nb_tirs%self.nb_essai+1)
+			self.state[pos][2] = self.success/(nb_tirs%self.nb_essai+1)
+			self.success = 0.
+
+
+	def set_essai( self, vecteur, nb_tirs ):
+
+			pos = nb_tirs//(self.nb_essai*2)
+
+			self.state[pos][1] = vecteur.norm
+			self.state[pos][0] = vecteur.angle
+
+	def to_zero( self ):
+
+		for i in self.state : 
+			i = [0.,0.,0.]
+
+		self.cpt = 0.
+		self.success = 0.
+
+
+class data_rand( object ) : 
+
+	def __init__( self, nb_rand, nb_essai ) : 
+
+
+		self.nb_essai = nb_essai
+		self.nb_rand = nb_rand
+		self.state =  np.zeros(( self.nb_rand, 4 ))
+		self.cpt = 0.0
+		self.success = 0.0
+
+	def calcul_proba( self, boole, nb_tirs ) : 
+
+		if boole : 
+			self.success += 1.
+
+		nb_tirs = nb_tirs//2
+
+		pos = (nb_tirs)//(self.nb_essai)
+		essai = nb_tirs%(self.nb_essai) +1
+		if ( essai == self.nb_essai ): 
+			
+			self.state[pos][2] = self.success/(essai)
+			self.success = 0.
+
+	def set_essai( self, vecteur, nb_tirs ):
+
+			pos = nb_tirs//(self.nb_essai*2)
+
+			self.state[pos][1] = vecteur.norm
+			self.state[pos][0] = vecteur.angle
+
+	def to_zero( self ):
+
+		for i in self.state : 
+			i = [0.,0.,0.]
+
+		self.cpt = 0.
+		self.success = 0.
+
+	def set_score( self, score, nb_tirs ):
+
+		pos = nb_tirs//(self.nb_essai*2)
+		essai = nb_tirs%(self.nb_essai*2)
+
+		self.state[pos][3] += score
 
 
 

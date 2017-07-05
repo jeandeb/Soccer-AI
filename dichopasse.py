@@ -7,37 +7,30 @@ import math
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain
-NB_ESSAI = 20
-NB_DICHO = 80
+NB_ESSAI = 5
+NB_DICHO = 20
 
 import numpy as np
 import logging
 
 logger = logging.getLogger("simuExpe")
 
-
 class Experience(object):
 
     MAX_STEP = 30
 
-    def __init__( self, x, y, strat, goal=None ):
+    def __init__( self, x, y, x2, y2, strat ):
     	self.x = x
         self.y = y
-        self.strat = strat 
-
-        if( goal ) : 
-            self.simu = tools.init_game( self.strat, goal )
-            self.goal = goal
-        else : 
-            self.simu = tools.init_game( self.strat )
-            self.goal = False
-
+        self.x2 = x2
+        self.y2 = y2
+        self.strat = strat
+        self.simu = tools.init_game( self.strat )
         self.data = data.data_dicho( NB_ESSAI, NB_DICHO )
         self.nb_dicho = NB_DICHO
         self.strat = strat
         self.simu.listeners += self
-        self.dicho = [[3*math.pi/2,0.0,0.0],[math.pi/2,8.0,0.0]]
-
+        self.dicho = [[0,0.0,0.0],[2*math.pi,8.0,0.0]]
 
     def start( self, visu = True ):
 
@@ -64,9 +57,9 @@ class Experience(object):
         self.simu.state.states[(1,0)].vitesse = Vector2D() 
         self.simu.state.ball.position = position.copy()
 
-        if self.goal : 
-
-            self.simu.state.states[(2,0)].position = Vector2D( 140, 45 )
+        position = Vector2D( self.x2, self.y2 )   
+        self.simu.state.states[(1,1)].position = position.copy()
+        self.simu.state.states[(1,1)].vitesse = Vector2D() 
 
         self.nb_tirs += 1
         self.last = self.simu.step
@@ -92,9 +85,12 @@ class Experience(object):
             self.data.set_essai( self.strat[0].passe, self.nb_tirs )
 
 
+
+
+
     def update_round( self, team1, team2, state ):
 
-        boole = tools.valide_tir( state )
+        boole = tools.valide_passe( state )
         if( state.step > self.last + self.MAX_STEP ) or boole:
             self.simu.end_round()
 
@@ -104,7 +100,7 @@ class Experience(object):
         if( self.cpt >= self.nb_dicho ) : 
             self.simu.end_match()
 
-        boole = tools.valide_tir( state )
+        boole = tools.valide_passe( state )
         self.data.calcul_proba( boole, self.nb_tirs  )
 
 

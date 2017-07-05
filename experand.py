@@ -1,4 +1,4 @@
-import protodicho
+import random_search
 import tools
 import pickle
 import sys
@@ -14,13 +14,12 @@ Y = 110
 strat1 = tools.PasseLearningStrat()
 goal = strategy.GoalStrategy()
 
-expe = protodicho.Experience( Y, X, [ strat1 ], goal=goal )
+expe = random_search.Experience( Y, X, [ strat1 ], goal=None )
 
 expe.start( False )
 
 print expe.data.state
+print expe.dicho
 
 if( (len(sys.argv) > 1) and (sys.argv[1] == "yes") ) :
-	pickle.dump( expe.data.state, open( "pickle_files/expedichogoal3.p", "wb" ) )
-
-
+	pickle.dump( expe.data.state, open( "pickle_files/experand.p", "wb" ) )
