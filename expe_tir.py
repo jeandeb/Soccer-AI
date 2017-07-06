@@ -7,9 +7,9 @@ from Projet_2I013 import strategy
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90
-NB_ESSAI = 8
-NB_RAND = 20
-NB_ETAT = 50
+NB_ESSAI = 15
+NB_RAND = 50
+NB_ETAT = 500
 X = GAME_HEIGHT/2
 Y = 110
 

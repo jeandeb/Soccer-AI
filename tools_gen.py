@@ -140,7 +140,7 @@ def new_vitesse( elem ) :
 	n_x = np.random.normal(loc=elem[1], scale=n_scale )
 	#print "angle = "+ str(a_x)
 
-	print Vector2D( angle = a_x, norm = n_x ).norm
+	#print Vector2D( angle = a_x, norm = n_x ).norm
 	return Vector2D( angle = a_x, norm = n_x )
 
 def generator_action( dicho, action, strat ) : 
@@ -236,7 +236,7 @@ def valide_passe( state ):
 
 	pos_balle = state.ball.position
 	position = state.states[(1,1)].position
-	return ((pos_balle - position).norm < 3) and (state.ball.vitesse.norm < 0.1)
+	return ((pos_balle - position).norm < 5) and (state.ball.vitesse.norm < 0.1)
 
 def valide_dribble( state ): 
 	return

@@ -7,11 +7,12 @@ from Projet_2I013 import strategy
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90
-NB_ESSAI = 20
-NB_RAND = 100
-NB_ETAT = 100
+NB_ESSAI = 1
+NB_RAND = 50
+NB_ETAT = 500
 X = GAME_HEIGHT/2
 Y = 110
+MAX_STEP = 200
 
 strat = tools_gen.LearningStrat()
 static = tools_gen.StaticStrategy()
@@ -24,7 +25,7 @@ stratad = [static]
 
 
 
-expe = dicho_generale.Experience( stratad, strateq, NB_ESSAI, NB_RAND, NB_ETAT, action )
+expe = dicho_generale.Experience( stratad, strateq, NB_ESSAI, NB_RAND, NB_ETAT, action, MAX_STEP )
 
 if( (len(sys.argv) > 1) and (sys.argv[1] == "show") ) :
 	show = True

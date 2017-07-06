@@ -18,7 +18,7 @@ class Experience(object):
 
     MAX_STEP = 60
 
-    def __init__( self, stratad, strateq, nb_essai, nb_rand, nb_etat, action ):
+    def __init__( self, stratad, strateq, nb_essai, nb_rand, nb_etat, action, max_step=None ):
         #nbessai par action (tir,...)
         #nb_rand d'actions aleatoires differentes par situation
         #nb_etat de situation differentes
@@ -29,6 +29,8 @@ class Experience(object):
         self.nb_rand = nb_rand
         self.nb_etat = nb_etat + 1
         self.action = action
+        if( max_step) :
+            MAX_STEP = max_step
 
         self.simu = tools_gen.init_game( self.strateq, self.stratad )
 
@@ -105,7 +107,7 @@ class Experience(object):
 
     def update_round( self, team1, team2, state ):
 
-        boole = tools.valide_tir( state )
+        boole = tools_gen.valide( state, self.action )
 
         if ( state.step > self.last + self.MAX_STEP ) or boole :
             self.simu.end_round()   
