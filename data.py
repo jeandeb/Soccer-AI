@@ -99,7 +99,7 @@ class data_rand( object ) :
 		nb_tirs = nb_tirs//2
 
 		pos = (nb_tirs)//(self.nb_essai)
-		essai = nb_tirs%(self.nb_essai) +1
+		essai = nb_tirs%(self.nb_essai) + 1
 		if ( essai == self.nb_essai ): 
 			
 			self.state[pos][2] = self.success/(essai)
@@ -128,7 +128,55 @@ class data_rand( object ) :
 		self.state[pos][3] += score
 
 
+class data_gen( object ) : 
 
+	def __init__( self, nb_rand, nb_essai ) : 
+
+
+		self.nb_essai = nb_essai
+		self.nb_rand = nb_rand
+		self.state =  np.zeros(( self.nb_rand, 6 ))
+		self.cpt = 0.0
+		self.success = 0.0
+
+	def calcul_proba( self, boole, nb_action ) : 
+
+		if boole : 
+			self.success += 1.
+
+		nb_action = nb_action//2
+
+		pos = (nb_action)//(self.nb_essai)
+		essai = nb_action%(self.nb_essai) + 1
+		if ( essai == self.nb_essai ): 
+			
+			self.state[pos][4] = self.success/(essai)
+			self.success = 0.
+
+	def set_essai( self, vitesse, tir, nb_action ):
+
+			pos = nb_action//(self.nb_essai*2)
+
+			self.state[pos][0] = vitesse.angle
+			self.state[pos][1] = vitesse.norm
+
+			self.state[pos][2] = tir.angle
+			self.state[pos][3] = tir.norm
+
+	def to_zero( self ):
+
+		for i in self.state : 
+			i = [0.,0.,0.,0.,0.,0.]
+
+		self.cpt = 0.
+		self.success = 0.
+
+	def set_score( self, score, nb_tirs ):
+
+		pos = nb_tirs//(self.nb_essai*2)
+		essai = nb_tirs%(self.nb_essai*2)
+
+		self.state[pos][5] += score
 
 
 

@@ -16,10 +16,10 @@ goal = strategy.GoalStrategy()
 
 expe = random_search.Experience( Y, X, [ strat1 ], goal=None )
 
-expe.start( False )
+expe.start( True )
 
 print expe.data.state
 print expe.dicho
 
 if( (len(sys.argv) > 1) and (sys.argv[1] == "yes") ) :
-	pickle.dump( expe.data.state, open( "pickle_files/experand.p", "wb" ) )
+	pickle.dump( expe.data.state, open( "pickle_files/experand1.p", "wb" ) )

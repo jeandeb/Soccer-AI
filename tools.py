@@ -145,14 +145,14 @@ def best( tab, dicho ):
 		elif( i[2] == dicho[2] and i[2] != 0 and i[1] > dicho[1] ) : 
 			swap( dicho, i )
 
-def swap_best( tab, best ):
+def best_tab( tab, dicho ):
 
-	if ( tab[2] > best[2] ):
-		swap( best, tab )
-	elif( tab[2] == best[2] and tab[2] != 0 and tab[1] > best[1] ) : 
-		swap( best, tab )
-	elif ((tab[2] == best[2] ) and (tab[3] < best[3])) : 
-		swap( best, tab )	
+	if (tab[2] > dicho[2] ):
+		swap( dicho, tab )
+	elif ((tab[2] == dicho[2] ) and (tab[3] < dicho[3]) ) : 
+		swap( dicho, tab )
+	elif( tab[2] == dicho[2] and tab[2] != 0 and tab[1] > dicho[1] ) : 
+		swap( dicho, tab )
 
 
 def shoot_vect_rand( pos ):
@@ -217,14 +217,14 @@ def shoot_rand_search( tab ):
 
 def new_shoot( elem ) : 
 
-	a_scale = 0.5
-	n_scale = 1.5
+	a_scale = 0.1 + (1 - elem[2])/2
+	n_scale = 0.5 + (1 - elem[2])*4
 
 	a_x = np.random.normal(loc=elem[0], scale=a_scale )
 	n_x = np.random.normal(loc=elem[1], scale=n_scale )
 	#print "angle = "+ str(a_x)
 
-
+	
 	return Vector2D( angle = a_x, norm = n_x )
 
 

@@ -7,8 +7,8 @@ import random
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain
-NB_ESSAI = 15
-nb_rand = 2000
+NB_ESSAI = 5
+nb_rand = 50
 
 import numpy as np
 import logging
@@ -18,7 +18,7 @@ logger = logging.getLogger("simuExpe")
 
 class Experience(object):
 
-    MAX_STEP = 30
+    MAX_STEP = 50
 
     def __init__( self, x, y, strat, goal=None ):
     	self.x = x
@@ -78,10 +78,7 @@ class Experience(object):
 
         if( self.nb_tirs%(NB_ESSAI*2) == 0 and self.nb_tirs > 1 ):
 
-            #print self.dicho
-            #print "essai = " + str(self.strat[0].passe.angle) + " " + str(self.strat[0].passe.norm)
-            tools.best( self.data.state, self.dicho )
-            #print self.dicho
+            tools.best_tab( self.data.state[self.nb_tirs//(NB_ESSAI*2)-1], self.dicho )
             self.strat[0].passe = tools.new_shoot( self.dicho )
             self.data.set_essai( self.strat[0].passe, self.nb_tirs )
             self.cpt += 1
