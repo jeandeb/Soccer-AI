@@ -184,12 +184,15 @@ def set_data_alea(  data_alea, dicho, action, pos, num_etat ) :
 	elif action[1][1] : 
 		pos_ad_joueur = pos[2][0] - pos[0][0]
 		vit_ad = pos[2][1]
+	else : 
+		pos_ad_joueur = Vector2D( GAME_WIDTH, GAME_HEIGHT/2 ) - pos[0][0]
+		vit_ad = (pos_ad_joueur*pos[0][0])/2
 
-	data_alea[num_etat][0][0] = pos_ad_joueur.norm
-	data_alea[num_etat][0][1] = pos_ad_joueur.angle
+	data_alea[num_etat][0][0] = pos_ad_joueur.angle
+	data_alea[num_etat][0][1] = pos_ad_joueur.norm
 
-	data_alea[num_etat][1][0] = vit_ad.norm
-	data_alea[num_etat][1][1] = vit_ad.angle
+	data_alea[num_etat][1][0] = vit_ad.angle
+	data_alea[num_etat][1][1] = vit_ad.norm
 
 	data_alea[num_etat][2][0] = pos[0][0].x
 	data_alea[num_etat][2][1] = pos[0][0].y
@@ -205,6 +208,11 @@ def set_data_alea(  data_alea, dicho, action, pos, num_etat ) :
 
 	data_alea[num_etat][6][0] = dicho[2][0]
 	data_alea[num_etat][6][1] = dicho[2][1]
+
+	vecteur_direction = pos_ad_joueur + vit_ad
+	data_alea[num_etat][7][0] = vecteur_direction.norm
+	data_alea[num_etat][7][1] = vecteur_direction.angle
+
 
 
 
@@ -244,7 +252,7 @@ def valide_dribble( state ):
 def valide_intercepte( state ): 
 	pos_balle = state.ball.position
 	position = state.states[(1,0)].position
-	return ((pos_balle - position).norm < 0.1)
+	return ((pos_balle - position).norm < 2)
 
 def valide_pousse( state ): 
 	return

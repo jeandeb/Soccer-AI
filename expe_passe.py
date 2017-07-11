@@ -8,8 +8,8 @@ from Projet_2I013 import strategy
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90
 NB_ESSAI = 10
-NB_RAND = 50
-NB_ETAT = 1000
+NB_RAND = 80
+NB_ETAT = 200
 MAX_STEP = 120
 X = GAME_HEIGHT/2
 Y = 110
@@ -29,9 +29,6 @@ expe = dicho_generale.Experience( stratad, strateq, NB_ESSAI, NB_RAND, NB_ETAT, 
 
 if( (len(sys.argv) > 1) and (sys.argv[1] == "show") ) :
 	show = True
-elif (len(sys.argv) > 1) and (sys.argv[1] == "yes"): 
-	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_passe.p", "wb" ) )
-	show = False
 else : 
 	show = False
 
@@ -40,5 +37,5 @@ expe.start( show )
 
 print expe.data_alea
 
-if( (len(sys.argv) > 2) and (sys.argv[2] == "yes") ) :
+if( (len(sys.argv) > 2) and (sys.argv[2] == "yes") or (len(sys.argv) > 1) and (sys.argv[1] == "yes")) :
 	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_passe.p", "wb" ) )

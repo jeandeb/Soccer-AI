@@ -217,15 +217,19 @@ def shoot_rand_search( tab ):
 
 def new_shoot( elem ) : 
 
-	a_scale = 0.1 + (1 - elem[2])/2
-	n_scale = 0.5 + (1 - elem[2])*4
+	a_scale = 0.1 + (1 - elem[2])/4
+	n_scale = 0.5 + (1 - elem[2])
 
 	a_x = np.random.normal(loc=elem[0], scale=a_scale )
 	n_x = np.random.normal(loc=elem[1], scale=n_scale )
+	#print "dicho = " + str(elem)
 	#print "angle = "+ str(a_x)
 
+	while( n_x > 10. or n_x < 0. ):
+		n_x = np.random.normal( loc=elem[1], scale=n_scale )
 	
-	return Vector2D( angle = a_x, norm = n_x )
+	#print "norm = "+ str(n_x)
+	return Vector2D( angle=a_x, norm=n_x )
 
 
 
