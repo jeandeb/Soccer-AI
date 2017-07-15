@@ -18,7 +18,7 @@ p7
 I-1
 sS'rank_'
 p8
-I4
+I2
 sS'fit_intercept'
 p9
 I01
@@ -56,7 +56,7 @@ I-1
 I0
 tp23
 bI00
-S'UX\xc3\xa9\xa8EN@'
+S'x\x95\xb8Xw\xfdP@'
 p24
 tp25
 bsS'singular_'
@@ -69,11 +69,11 @@ g14
 tp28
 Rp29
 (I1
-(I4
+(I2
 tp30
 g21
 I00
-S'\x03\xc7\x19\x1f\x00P\xb3A\x0c\xb4q\x00\xd1E\xc1@\x0fq"\x1a6\tu@\xa0\xd6\xf4(YsU@'
+S'\xcaSpF&ix@3\x8aG\x9fmD\t@'
 p31
 tp32
 bsS'coef_'
@@ -87,11 +87,11 @@ tp35
 Rp36
 (I1
 (I1
-I4
+I2
 tp37
 g21
 I00
-S'\x85E\xcf\xf7\x95\xd9\x82?\xe3T\xca4\xc6B\x93?~\x02\x8f\x93%\x13\x1b\xbf\x02\xf9iC)\xaeG\xbe'
+S'\xfc\x9e#HS\x7f\xd7?l&1w\xda\xbag?'
 p38
 tp39
 bsS'_sklearn_version'
@@ -115,7 +115,7 @@ Rp46
 tp47
 g21
 I00
-S'\xb1\xa5\xec\x16C\xf3\xf0\xbf'
+S'\xd7B 4\x02\xab\xe3\xbf'
 p48
 tp49
 bsb.

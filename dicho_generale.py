@@ -3,8 +3,9 @@ import tools_gen
 import data
 from soccersimulator import settings
 from soccersimulator import SoccerTeam, Simulation, Strategy, show_simu, Vector2D, SoccerAction
-import tools
 import math
+import resource
+import gc
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain
@@ -12,7 +13,7 @@ GAME_HEIGHT = 90 # Largeur du terrain
 import numpy as np
 import logging
 
-logger = logging.getLogger("simuExpe")
+#logger = logging.getLogger("simuExpe")
 
 class Experience(object):
 
@@ -30,17 +31,18 @@ class Experience(object):
         self.nb_etat = nb_etat + 1
         self.action = action
 
-        if( max_step) :
-            MAX_STEP = max_step
-
-        self.simu.listeners += self
         self.simu = tools_gen.init_game( self.strateq, self.stratad )
+        self.simu.listeners += self
+
         self.data_gen = data.data_gen( self.nb_rand, self.nb_essai )
         self.data_alea = np.zeros(( self.nb_etat - 1,  8, 2 ))
         #(Vitadouballe, Vecadjoueur, Posjoueur, Vitjoueur, Vit, Tir, Proba)
 
         self.dicho = [[0., 0.], [0., 0.], [0.,float('inf')]]
         #[Vitesse(a,n), Passe(a,n), [proba,score]]
+
+        if( max_step) :
+            MAX_STEP = max_step
 
     def start( self, visu = True ):
 
@@ -70,6 +72,7 @@ class Experience(object):
                 tools_gen.set_data_alea( self.data_alea, self.dicho, self.action, self.pos, (self.cpt) )
                 self.nb_action = -1
                 self.data_gen.to_zero()
+
                 self.dicho = [[0., 0.], [0., 0.], [0.,float('inf')]]
                 self.cpt += 1
 
@@ -91,6 +94,7 @@ class Experience(object):
 
     def update_round( self, team1, team2, state ):
 
+        gc.collect()
         boole = tools_gen.valide( state, self.action )
         if ( state.step > self.last + self.MAX_STEP ) or boole :
             self.simu.end_round()   

@@ -3,6 +3,8 @@ import numpy as np
 import math
 import sys
 import pickle
+import matplotlib.pyplot as plt
+from soccersimulator.utils import Vector2D
 
 model = linear_model.LinearRegression( n_jobs=-1 )
 
@@ -17,39 +19,52 @@ if( (len(sys.argv) > 1) ) :
 print 2
 
 n_sample = len( data )
-features = np.zeros(( n_sample, 10 ))
-target = np.zeros(( n_sample, 4 ))
+features = np.zeros(( n_sample, 2 ))
+target = np.zeros(( n_sample, 1 ))
 weight = np.zeros(( n_sample ))
+error = np.zeros(( n_sample ))
+tab = []
 
-for i in range( n_sample/2 ) :
-	features[i][0] = data[i][0][0]
-	features[i][1] = data[i][0][1]
-	features[i][2] = data[i][1][0]
-	features[i][3] = data[i][1][1]
-	features[i][4] = data[i][2][0]
-	features[i][5] = data[i][2][1]
-	features[i][6] = data[i][3][0]
-	features[i][7] = data[i][3][1]
-	features[i][8] = data[i][7][0] 
-	features[i][8] = data[i][7][1] 
+for i in range( n_sample ) :
 
-	target[i][0] = data[i][4][0]
-	target[i][1] = data[i][4][1]
-	target[i][2] = data[i][5][0]
-	target[i][3] = data[i][5][1]
+	vecteur = Vector2D( data[i][2][0], data[i][2][1])
+	features[i][0] = vecteur.angle
+	features[i][1] = vecteur.norm
+	#features[i][2] = features[i][1]*features[i][0]
+	#features[i][3] = math.pow( features[i][2], 2 )
 
-	weight[i] = 1 + data[i][6][0]
+	target[i][0] = data[i][5][0]
+	
 
-print 3
+	#weight[i] = 1 + data[i][6][0]
 
 model.fit( features, target )
-print data[5]
-tab = [data[5][0][0], data[5][0][1], data[5][1][0], data[5][1][1], data[5][2][0], data[5][2][1], data[2][3][0], data[5][3][1], data[5][7][0], data[5][7][1]]
-print tab
-valeur = model.predict( [tab] )
-print valeur
 
-print 4
+for i in range( n_sample ) :
+	vecteur = Vector2D( data[i][2][0], data[i][2][1])
+	tab.append([vecteur.angle, vecteur.norm])
+
+print tab
+valeur = model.predict( tab )
+print valeur
+x = []
+y = []
+proba = []
+
+for i in range( n_sample ) : 
+		x.append( data[i][2][0] )
+		y.append( data[i][2][1] )
+		proba.append( valeur[i][0] )
+		print " X = " + str(data[i][2][0]) + " Y = " + str(data[i][2][1]) + " Proba = " + str(valeur[i][0]) 
+
+plt.xlabel('X')
+plt.ylabel( 'Y' )
+plt.scatter( x, y, s=5, alpha=1, c=proba)
+plt.title( 'Proba de tirer en fonction de la position du joueur' )
+plt.legend()
+plt.show()
+
+#print 4
 
 pickle.dump( model, open( "Regression_model/" + sys.argv[1], "wb" ) )
 
