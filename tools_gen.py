@@ -186,7 +186,6 @@ def set_data_alea(  data_alea, dicho, action, pos, num_etat ) :
 		vit_ad = pos[2][1]
 	else : 
 		pos_ad_joueur = Vector2D( GAME_WIDTH, GAME_HEIGHT/2 ) - pos[0][0]
-		vit_ad = (pos_ad_joueur*pos[0][0])/2
 
 	data_alea[num_etat][0][0] = pos_ad_joueur.angle
 	data_alea[num_etat][0][1] = pos_ad_joueur.norm

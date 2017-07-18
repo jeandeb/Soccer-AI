@@ -34,11 +34,6 @@ class Experience(object):
         self.simu = tools_gen.init_game( self.strateq, self.stratad )
         self.simu.listeners += self
 
-        self.data_gen = data.data_gen( self.nb_rand, self.nb_essai )
-        self.data_alea = np.zeros(( self.nb_etat - 1,  8, 2 ))
-        #(Vitadouballe, Vecadjoueur, Posjoueur, Vitjoueur, Vit, Tir, Proba)
-
-        self.dicho = [[0., 0.], [0., 0.], [0.,float('inf')]]
         #[Vitesse(a,n), Passe(a,n), [proba,score]]
 
         if( max_step) :
@@ -56,8 +51,6 @@ class Experience(object):
         self.nb_action = -1
         self.cpt = 0
         self.pos = tools_gen.generator( self.action, self.strateq, self.stratad, self.simu )
-        tools_gen.generator_action( self.dicho, self.action, self.strateq[0] )
-        self.data_gen.set_essai( self.strateq[0].vitesse, self.strateq[0].passe, 0 )
 
     def begin_round( self,team1,team2, state ):
 
@@ -69,12 +62,6 @@ class Experience(object):
 
             #reinitilisation des donees de recherche
             if( self.nb_action > 1 ):
-
-                tools_gen.set_data_alea( self.data_alea, self.dicho, self.action, self.pos, (self.cpt) )
-                self.nb_action = -1
-                self.data_gen.to_zero()
-
-                self.dicho = [[0., 0.], [0., 0.], [0.,float('inf')]]
                 self.cpt += 1
 
             self.pos = tools_gen.generator( self.action, self.strateq, self.stratad, self.simu )
@@ -83,16 +70,10 @@ class Experience(object):
             self.simu.end_match()
             return  
 
-        if( self.nb_action%( self.nb_essai*2 ) == 0 and self.nb_action > 1) : 
-
-            tools_gen.best_elem( self.data_gen.state[self.nb_action//(self.nb_essai*2)-1], self.dicho )
-            tools_gen.generator_action( self.dicho, self.action, self.strateq[0] )
-
-            self.data_gen.set_essai( self.strateq[0].vitesse, self.strateq[0].passe, self.nb_action )
-    
-        else : 
+        if not ( self.nb_action%( self.nb_essai*2 ) == 0 and self.nb_action > 1) : 
             tools_gen.positionne( self.pos, self.simu )
 
+    
     def update_round( self, team1, team2, state ):
 
         #gc.collect()
@@ -107,18 +88,4 @@ class Experience(object):
             return
 
         boole = tools_gen.valide( state, self.action )
-        score = tools_gen.score( state, self.action )
-
-        self.data_gen.set_score( score, self.nb_action )
-        self.data_gen.calcul_proba( boole, self.nb_action  )
-
-
-
-
-
-
-
-
-
-
 

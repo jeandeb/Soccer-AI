@@ -23,11 +23,13 @@ action = [ 'Tir', [False,False], [False,True] ]
 strateq = [strat]
 stratad = [static]
 
+if( (len(sys.argv) > 1) ) :
+	NB_ETAT = int(sys.argv[1])
 
 
 expe = dicho_generale.Experience( stratad, strateq, NB_ESSAI, NB_RAND, NB_ETAT, action )
 
-if( (len(sys.argv) > 1) and (sys.argv[1] == "show") ) :
+if( (len(sys.argv) > 2) and (sys.argv[2] == "show") ) :
 	show = True
 else : 
 	show = False
@@ -37,5 +39,5 @@ expe.start( show )
 
 print expe.data_alea
 
-if( (len(sys.argv) > 2) and (sys.argv[2] == "yes") or (len(sys.argv) > 1) and (sys.argv[1] == "yes")) :
-	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_tir500.p", "wb" ) )
+if( (len(sys.argv) > 3) and (sys.argv[3] == "yes") or (len(sys.argv) > 2) and (sys.argv[2] == "yes")) :
+	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_tir" + str(NB_ETAT)+ ".p", "wb" ) )

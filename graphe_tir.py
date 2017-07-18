@@ -24,7 +24,7 @@ print data
 for i in range( len( data ) ) : 
 		x.append(data[i][2][0])
 		y.append(data[i][2][1])
-		proba.append( data[i][5][0])
+		proba.append( data[i][5][1])
 		print " X = " + str(data[i][2][0]) + " Y = " + str(data[i][2][1]) + " Proba = " + str(data[i][6][0]) + " Norme = " + str(data[i][5][1]) + "Angle = " + str(data[i][5][0])
 
 
