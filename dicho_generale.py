@@ -56,7 +56,7 @@ class Experience(object):
         self.nb_action = -1
         self.cpt = 0
         self.pos = tools_gen.generator( self.action, self.strateq, self.stratad, self.simu )
-        tools_gen.generator_action( self.dicho, self.action, self.strateq[0] )
+        tools_gen.generator_action( self.dicho, self.action, self.strateq[0], state )
         self.data_gen.set_essai( self.strateq[0].vitesse, self.strateq[0].passe, 0 )
 
     def begin_round( self,team1,team2, state ):
@@ -86,7 +86,7 @@ class Experience(object):
         if( self.nb_action%( self.nb_essai*2 ) == 0 and self.nb_action > 1) : 
 
             tools_gen.best_elem( self.data_gen.state[self.nb_action//(self.nb_essai*2)-1], self.dicho )
-            tools_gen.generator_action( self.dicho, self.action, self.strateq[0] )
+            tools_gen.generator_action( self.dicho, self.action, self.strateq[0], state )
 
             self.data_gen.set_essai( self.strateq[0].vitesse, self.strateq[0].passe, self.nb_action )
     

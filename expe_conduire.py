@@ -7,21 +7,21 @@ from Projet_2I013 import strategy
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90
-NB_ESSAI = 4
-NB_RAND = 60
-NB_ETAT = 10
-MAX_STEP = 80
+NB_ESSAI = 2
+NB_RAND = 50
+NB_ETAT = 2
+MAX_STEP = 120
 X = GAME_HEIGHT/2
 Y = 110
 
-strat = tools_gen.DribbleStrat()
-intercepte = tools_gen.IntercepteStrategy()
-action = [ 'Dribble', [False,True], [False,True] ]
+strat = tools_gen.ConduireStrat()
+static = tools_gen.StaticStrategy()
+action = [ 'Conduire', [False,True], [False,True] ]
 #[nom,Entrees:Balle,Joueur2,Sortie:[Vj,Tj]]
 
 
-strateq = [strat]
-stratad = [intercepte]
+strateq = [strat, static]
+stratad = [static]
 
 
 if( (len(sys.argv) > 1) ) :
@@ -41,4 +41,4 @@ expe.start( show )
 print expe.data_alea
 
 if( (len(sys.argv) > 3) and (sys.argv[3] == "yes") or (len(sys.argv) > 2) and (sys.argv[2] == "yes")) :
-	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_dribble" + str(NB_ETAT)+ ".p", "wb" ) )
+	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_conduire" + str(NB_ETAT)+ ".p", "wb" ) )

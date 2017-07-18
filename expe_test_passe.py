@@ -30,14 +30,14 @@ class PasseTestStrategy(Strategy):
 
         
         vit_ad = state.states[(1,1)].vitesse
-        vec = (state.states[(1,1)].position+vit_ad) - prop.my_position
-        tab = [[vec.norm, vec.angle]]
+        vec = state.states[(1,1)].position - prop.my_position + vit_ad
+        tab = [[vec.angle, vec.norm]]
         #print tab 
         valeurs = passe_tab.predict( tab )
         print valeurs
-        print vit_ad.norm
+        #print vit_ad.norm
 
-        return SoccerAction( Vector2D( angle=valeurs[0][0], norm=valeurs[0][1]), Vector2D(angle=vec.angle+math.pi, norm=valeurs[0][3]) )
+        return SoccerAction( Vector2D( angle=valeurs[0][0], norm=valeurs[0][1]), Vector2D(angle=vec.angle, norm=valeurs[0][3]) )
         
 
 static = tools_gen.StaticStrategy()

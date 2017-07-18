@@ -31,15 +31,15 @@ if( (len(sys.argv) > 1) ) :
 	data = pickle.load( open( "pickle_files/" + nom, "rb" ) )
 
 
-n_sample = 480
+n_sample = 380
 n_test = len( data ) - n_sample
 
 features = np.zeros(( n_sample, 2 ))
-target = np.zeros(( n_sample, 4 ))
+target = np.zeros(( n_sample, 5 ))
 weight = np.zeros(( n_sample ))
 
 test_features = np.zeros(( n_test, 2 ))
-test_target = np.zeros(( n_test, 4 ))
+test_target = np.zeros(( n_test, 5 ))
 
 error = np.zeros(( n_sample ))
 test_error = np.zeros(( n_test ))
@@ -51,8 +51,9 @@ test_error = np.zeros(( n_test ))
 
 for i in range( n_sample ) :
 
-	features[i][0] = data[i][0][0] + data[i][1][0]
-	features[i][1] = data[i][0][1] + data[i][1][1]
+	vec = Vector2D( angle=data[i][0][0], norm=data[i][0][1] ) + Vector2D( angle=data[i][1][0], norm=data[i][1][1] )
+	features[i][0] = vec.angle
+	features[i][1] = vec.norm
 	#features[i][2] = data[i][1][0]
 	#features[i][3] = data[i][1][1]
 	#features[i][4] = data[i][0][0]*data[i][0][0]
@@ -63,6 +64,7 @@ for i in range( n_sample ) :
 	target[i][1] = data[i][4][1]
 	target[i][2] = data[i][5][0]
 	target[i][3] = data[i][5][1]
+	target[i][4] = data[i][6][0]
 	
 
 	weight[i] = data[i][6][0]*2
@@ -125,9 +127,9 @@ norm = []
 for i in range( n_sample ) : 
 		x.append( data[i][0][0] )
 		y.append( data[i][0][1] )
-		angle.append( valeur[i][0] )
-		norm.append( valeur[i][1] )
-		#print " X = " + str(data[i][2][0]) + " //Y = " + str(data[i][2][1]) + " //ANGLE = " + str(valeur[i][2]) + " //NORM = "+ str(valeur[i][3]) 
+		angle.append( valeur[i][2] )
+		norm.append( valeur[i][3] )
+		print " X = " + str(data[i][2][0]) + " //Y = " + str(data[i][2][1]) + " //ANGLE = " + str(valeur[i][2]) + " //NORM = "+ str(valeur[i][3]) 
 
 plt.xlabel('angle')
 plt.ylabel( 'distance' )

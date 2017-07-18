@@ -5,6 +5,7 @@ from soccersimulator import SoccerTeam, Simulation, Strategy, show_simu, Vector2
 import math
 from Projet_2I013 import strategy
 import tools
+import Projet_2I013
 import numpy as np
 
 NB_GENER = 100
@@ -25,6 +26,39 @@ class StaticStrategy(Strategy):
         super(StaticStrategy,self).__init__("Static")
     def compute_strategy(self,state,id_team,id_player):
         return SoccerAction()
+
+class IntercepteStrategy(Strategy):
+    def __init__(self):
+        self.name = "Intercepte"
+    def compute_strategy(self,state,id_team,id_player):
+    	prop =  Projet_2I013.tools.properties(state,id_team,id_player )
+        basic_action = Projet_2I013.tools.basic_action(prop )
+
+        return basic_action.go_ball + basic_action.shoot_goal_max
+
+class DribbleStrat( Strategy ) : 
+    def __init__(self,shoot=None):
+        self.name = "Dribble"
+        self.passe = Vector2D()
+        self.vitesse = Vector2D()
+    def compute_strategy(self,state,id_team,id_player):
+
+    	prop =  Projet_2I013.tools.properties(state,id_team,id_player )
+        basic_action = Projet_2I013.tools.basic_action(prop )
+
+        return SoccerAction(self.vitesse,self.passe) + basic_action.go_ball 
+
+class ConduireStrat( Strategy ) : 
+    def __init__(self,shoot=None):
+        self.name = "Conduire"
+        self.passe = Vector2D()
+        self.vitesse = Vector2D()
+    def compute_strategy(self,state,id_team,id_player):
+
+    	prop =  Projet_2I013.tools.properties(state,id_team,id_player )
+        basic_action = Projet_2I013.tools.basic_action(prop )
+
+        return SoccerAction(self.vitesse,self.passe) + basic_action.go_ball 
 
 
 
@@ -77,6 +111,12 @@ def generator(  action, strateq, stratad, simu ):
 
 	#position aleatoire j1
 	position, vitesse = random_pos_vit( simu, 1, 0 )
+	if action[0] == "Dribble" or action[0] == "Conduire" :
+			position = Vector2D(75,45)
+
+	if action[0] == "Conduire" :
+			vitesse = Vector2D()
+
 
 	tab = [[position, vitesse ]]
 
@@ -85,6 +125,8 @@ def generator(  action, strateq, stratad, simu ):
 	
 		position_b = random_position()
 		simu.state.ball.position = position_b
+
+
 
 		vitesse = random_vitesse()
 		simu.state.ball.vitesse = vitesse
@@ -102,6 +144,8 @@ def generator(  action, strateq, stratad, simu ):
 	if len( strateq ) > 1 and action[1][1] :
 
 		position2, vitesse = random_pos_vit( simu, 1, 1 )
+		if action[0] == "Conduire" :
+			vitesse = Vector2D()
 
 		tab.append( [position2, vitesse, 1] )
 
@@ -109,7 +153,21 @@ def generator(  action, strateq, stratad, simu ):
 		if( stratad[0].name ==  "Goal" ) :
 			simu.state.states[(2,0)].position = Vector2D( 140, 45 )
 		else :
+
 			position3, vitesse = random_pos_vit( simu, 2, 0 )
+
+			if action[0] == "Degage" :
+				while (position3 - position).x <= 0 or  (position3 - position).norm >= 60 : 
+					position3, vitesse = random_pos_vit( simu, 2, 0 )
+					vitesse = Vector2D()
+			elif action[0] == "Dribble" :
+				while (position3 - position).x <= 0  or  (position3 - position).norm >= 40 : 
+					position3, vitesse = random_pos_vit( simu, 2, 0 )
+					vitesse = Vector2D()
+			elif action[0] == "Conduire" : 
+				position3 = position + Vector2D( -4, 0 )
+				vitesse = Vector2D()
+
 			tab.append( [position3, vitesse, 2] )
 
 	return tab
@@ -143,7 +201,7 @@ def new_vitesse( elem ) :
 	#print Vector2D( angle = a_x, norm = n_x ).norm
 	return Vector2D( angle = a_x, norm = n_x )
 
-def generator_action( dicho, action, strat ) : 
+def generator_action( dicho, action, strat, state ) : 
 
 	if action[2][0]:
 		elem = [dicho[0][0], dicho[0][1], dicho[2][0]]
@@ -233,8 +291,8 @@ def valide( state, action ) :
 	elif( action[0] == 'Intercepte' ):
 		return valide_intercepte( state )
 
-	elif( action[0] == 'Pousse' ):
-		return valide_pousse( state )
+	elif( action[0] == 'Conduire' ):
+		return valide_conduire( state )
 
 	elif( action[0] == 'Degage' ):
 		return valide_degage( state )
@@ -245,19 +303,34 @@ def valide_passe( state ):
 	position = state.states[(1,1)].position
 	return ((pos_balle - position).norm < 5) and (state.ball.vitesse.norm < 0.1)
 
-def valide_dribble( state ): 
-	return
+def valide_dribble( state ):
+
+	pos_balle = state.ball.position
+	position_ad = state.states[(2,0)].position
+	position = state.states[(1,0)].position
+
+	return (pos_balle - position_ad).x > 5 and (pos_balle - position).norm < 2
 
 def valide_intercepte( state ): 
+
 	pos_balle = state.ball.position
 	position = state.states[(1,0)].position
+
 	return ((pos_balle - position).norm < 2)
 
-def valide_pousse( state ): 
-	return
+def valide_conduire( state ): 
+	pos_balle = state.ball.position
+	position = state.states[(1,1)].position
+	if (pos_balle - position).norm < 1 : 
+		print "TRUUUUE"
+	return (pos_balle - position).norm < 1
 
 def valide_degage( state ): 
-	return
+
+	pos_balle = state.ball.position
+	position = state.states[(2,0)].position
+
+	return ((pos_balle - position).x > 4) and ((pos_balle - position).norm > 6)
 
 
 def score( state, action ) : 
@@ -274,8 +347,8 @@ def score( state, action ) :
 	elif( action[0] == 'Intercepte' ):
 		return score_intercepte( state )
 
-	elif( action[0] == 'Pousse' ):
-		return score_pousse( state )
+	elif( action[0] == 'Conduire' ):
+		return score_conduire( state )
 
 	elif( action[0] == 'Degage' ):
 		return score_degage( state )
@@ -284,19 +357,37 @@ def score_passe( state ):
 
 	pos_balle = state.ball.position
 	position = state.states[(1,1)].position
+
 	return (pos_balle - position).norm
 
-def score_dribble( state ): 
-	return
+def score_dribble( state ):
+	pos_balle = state.ball.position
+	position = state.states[(2,0)].position
+
+	return (pos_balle - position).x
 
 def score_intercepte( state ): 
 	pos_balle = state.ball.position
 	position = state.states[(1,0)].position
+
 	return (pos_balle - position).norm 
 
-def score_pousse( state ): 
-	return
+def score_conduire( state ): 
+	position_self = state.states[(1,0)].position
+	position_obj = state.states[(1,1)].position
+	pos_balle = state.ball.position
+	return -(pos_balle - position_self).norm - (pos_balle - position_obj).norm
 
-def score_degage( state ): 
-	return
+def score_degage( state ):
+
+	pos_balle = state.ball.position
+	position = state.states[(2,0)].position
+
+	return (pos_balle - position).norm + state.ball.vitesse.norm*100
+
+
+
+
+
+
 

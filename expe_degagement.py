@@ -7,16 +7,16 @@ from Projet_2I013 import strategy
 
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90
-NB_ESSAI = 4
-NB_RAND = 60
+NB_ESSAI = 5
+NB_RAND = 50
 NB_ETAT = 10
 MAX_STEP = 80
 X = GAME_HEIGHT/2
 Y = 110
 
-strat = tools_gen.DribbleStrat()
+strat = tools_gen.LearningStrat()
 intercepte = tools_gen.IntercepteStrategy()
-action = [ 'Dribble', [False,True], [False,True] ]
+action = [ 'Degage', [False,True], [False,True] ]
 #[nom,Entrees:Balle,Joueur2,Sortie:[Vj,Tj]]
 
 
@@ -41,4 +41,4 @@ expe.start( show )
 print expe.data_alea
 
 if( (len(sys.argv) > 3) and (sys.argv[3] == "yes") or (len(sys.argv) > 2) and (sys.argv[2] == "yes")) :
-	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_dribble" + str(NB_ETAT)+ ".p", "wb" ) )
+	pickle.dump( expe.data_alea, open( "pickle_files/surexepe_degage" + str(NB_ETAT)+ ".p", "wb" ) )
