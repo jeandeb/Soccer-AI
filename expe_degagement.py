@@ -8,7 +8,7 @@ from Projet_2I013 import strategy
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90
 NB_ESSAI = 5
-NB_RAND = 50
+NB_RAND = 40
 NB_ETAT = 10
 MAX_STEP = 80
 X = GAME_HEIGHT/2

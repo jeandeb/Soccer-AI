@@ -31,7 +31,7 @@ if( (len(sys.argv) > 1) ) :
 	data = pickle.load( open( "pickle_files/" + nom, "rb" ) )
 
 
-n_sample = 380
+n_sample = 50
 n_test = len( data ) - n_sample
 
 features = np.zeros(( n_sample, 2 ))
@@ -74,8 +74,9 @@ model.fit( features, target, weight )
 #TABLEAUX DE TESTS
 #---------------------------------
 for i in range( n_sample, n_sample + n_test ) : 
-	test_features[i-n_sample][0] = data[i][0][0] + data[i][1][0] 
-	test_features[i-n_sample][1] = data[i][0][1] + data[i][1][1] 
+	vec = Vector2D( angle=data[i][0][0], norm=data[i][0][1] ) + Vector2D( angle=data[i][1][0], norm=data[i][1][1] )
+	test_features[i-n_sample][0] = vec.angle
+	test_features[i-n_sample][1] = vec.angle 
 	#test_features[i-n_sample][2] =  data[i][1][0]
 	#test_features[i-n_sample][3] =  data[i][1][1]
 	#test_features[i-n_sample][4] = data[i][0][0]*data[i][0][0]
@@ -129,21 +130,21 @@ for i in range( n_sample ) :
 		y.append( data[i][0][1] )
 		angle.append( valeur[i][2] )
 		norm.append( valeur[i][3] )
-		print " X = " + str(data[i][2][0]) + " //Y = " + str(data[i][2][1]) + " //ANGLE = " + str(valeur[i][2]) + " //NORM = "+ str(valeur[i][3]) 
+		#print " X = " + str(data[i][2][0]) + " //Y = " + str(data[i][2][1]) + " //ANGLE = " + str(valeur[i][2]) + " //NORM = "+ str(valeur[i][3]) 
 
 plt.xlabel('angle')
 plt.ylabel( 'distance' )
 plt.scatter( x, y, s=5, alpha=1, c=angle)
 plt.title( 'Predictions ANGLE' )
 plt.legend()
-plt.show()
+#plt.show()
 
 plt.xlabel('angle')
 plt.ylabel( 'distance' )
 plt.scatter( x, y, s=5, alpha=1, c=norm)
 plt.title( 'Predictions NORME' )
 plt.legend()
-plt.show()
+#plt.show()
 
 
 
