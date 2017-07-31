@@ -14,7 +14,7 @@ X = GAME_HEIGHT/2
 Y = 110
 MAX_STEP = 300
 
-strat = tools_gen.LearningStrat()
+strat = tools_gen.MonteStrat()
 static = tools_gen.StaticStrategy()
 action = [ 'Intercepte', [True,False], [True,False] ]
 #[nom,Entrees:Balle,Joueur2,Sortie:[Vj,Tj]]

@@ -5,6 +5,9 @@ from soccersimulator import SoccerTeam, Simulation, Strategy, show_simu, Vector2
 import math
 import numpy as np 
 
+
+
+
 NB_GENER = 100
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain

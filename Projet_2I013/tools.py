@@ -8,6 +8,8 @@ from soccersimulator.mdpsoccer import SoccerTeam, Simulation, SoccerAction
 #from soccersimulator.gui import SimuGUI,show_state,show_simu
 from soccersimulator.utils import Vector2D
 
+
+
 GAME_WIDTH = 150 # Longueur du terrain
 GAME_HEIGHT = 90 # Largeur du terrain
 GAME_GOAL_HEIGHT = 10 # Largeur des buts
@@ -26,6 +28,7 @@ linear = pickle.load( open( "Regression_model/surexepe_tir400.p", "rb" ))
 intercepte = pickle.load( open( "Regression_model/surexepe_intercepte500.p", "rb" ))
 passe_tab = pickle.load( open( "Regression_model/surexepe_passe200.p", "rb" ))
 dribble = pickle.load( open( "Regression_model/surexepe_dribble300.p", "rb" ))
+
 
 class properties( object ):
     def __init__( self,state,idteam,idplayer ):
@@ -406,7 +409,6 @@ class basic_action( object ):
 
         tab = [[ vec_adv.angle, vec_adv.norm ]]
         valeurs = dribble.predict( tab )
-        print valeurs
         if self.prop.key[0] == 2 : 
             valeurs[0][2] += math.pi
         #print valeurs
@@ -453,12 +455,94 @@ class basic_action( object ):
             
         
         
+def set_state( state ):
 
+    state = [0,0,0,0,0]
+
+    if state.ball.position.y < 50 or state.ball.position.y > 40 :
+
+        if state.ball.position.x > 150 : 
+            state = [-1,-1,-1,-1,-1]
+            return state
+        elif state.ball.position.x < 0 : 
+            state = [-2,-2,-2,-2,-2] 
+            return state
+
+    pos_x = state.ball.position.x//(GAME_WIDTH//5)
+    pos_y = state.ball.position.y//(GAME_HEIGHT//5)
+
+    if pos_x > 4 : 
+        pos_x = 4
+    if pos_y > 4 : 
+        pos_y = 4
+    state[0] = int(pos_y * 5 + pos_x) 
+
+    pos_x = state.player_state( self.key[0], self.key[1] ).position.x//(GAME_WIDTH//5)
+    pos_y = state.player_state( self.key[0], self.key[1] ).position.y//(GAME_HEIGHT//5)
+
+    if pos_x > 4 : 
+        pos_x = 4
+    if pos_y > 4 : 
+        pos_y = 4
+    state[1] = int(pos_y * 5 + pos_x) 
+
+    pos_x = state.player_state( self.key[0], self.key[2] ).position.x//(GAME_WIDTH//5)
+    pos_y = state.player_state( self.key[0], self.key[2] ).position.y//(GAME_HEIGHT//5)
+
+    if pos_x > 4 : 
+        pos_x = 4
+    if pos_y > 4 : 
+        pos_y = 4
+    state[2] = int(pos_y * 5 + pos_x) 
+
+    if state[0] == state[1] : 
+        state[3] = 1
+
+    if state.ball.vitesse.x < 0 : 
+        state[4] = 1
+
+    return state
         
     
-        
-        
-        
+def best_strat( q_tab, new_state ):
+
+    tab_action = q_tab[new_state[0]][new_state[1]][new_state[2]][new_state[3]][new_state[4]]
+    maximum = 0
+    i_max = 0
+
+    for i in range( len(tab_action) ) : 
+        if tab_action[i] >= maximum:
+            maximum = tab_action[i]
+            i_max = i
+
+    if maximum == 0:
+        i_max = int(random.randrange( 0, len(tab_action) ))
+
+    return i_max
+
+
+
+def set_strat( new_strat, state  ):
+    #print "set_strat"
+    prop =  properties( state, 1 , 0 )
+
+    basic_action = basic_action(prop )
+    #print 'new strat = ' + str( new_strat )
+    if new_strat == 0 : 
+        return basic_action.aller_but
+
+    elif new_strat == 1 :
+        return basic_action.shoot_learn
+
+    elif new_strat == 2 :
+        return basic_action.dribble
+
+    elif new_strat == 3 :
+        return basic_action.go_ball
+
+    elif new_strat == 4 :
+        basic_action.placement_def
+
         
         
         

@@ -10,7 +10,7 @@ import arbres
 import entrainement_arbre
 import tools
 import basic_strategy
-
+import pickle
 
 
 GAME_WIDTH = 150 # Longueur du terrain
@@ -22,9 +22,19 @@ MAX_GAME_STEPS = 2000 # duree du jeu par defaut
 maxPlayerSpeed = 1. # Vitesse maximale d un joueur
 maxPlayerAcceleration = 0.2 # Acceleration maximale
 maxBallAcceleration = 5 # Acceleration maximale de la balle
-
+q_tab = pickle.load( open( "pickle_files/surexepe_monte20000.p", "rb" ))
 ## Strategie aleatoire
+class MonteStrat( Strategy ) :
 
+    def __init__(self):
+        self.name = "Monte"
+        self.q_tab = q_tab
+
+    def compute_strategy(self,state,id_team,id_player):
+        print state
+        etat_jeu = tools.set_state( state )
+        i = tools.best_strat( self.q_tab, etat_jeu )
+        return tools.set_strat( i, state )
 
 class CenterStrategy( Strategy ) : 
     def __init__( self ):
